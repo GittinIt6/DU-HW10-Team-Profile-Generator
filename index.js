@@ -1,93 +1,139 @@
 //Include packages needed for this application
 const fs = require('fs');
 const inquirer = require('inquirer');
+let htmlStart = 
+`<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+    <link rel="stylesheet" href="./style.css" />
+    <title>Team Generator</title>
+    
+</head>
+<body>
+    <header>
+        <h1>My Team</h1>
+    </header>
 
+    <main>`
+let htmlEnd =
+`    </main>
+    
+</body>
+</html>`
+let cssData = 
+`* {
+    font-family: Arial, Helvetica, sans-serif
+}
+header{
+    background-color: rgb(208, 226, 241);
+    margin: auto;
+    text-align: center;
+    padding: 30px;
+}
+.card{
+    max-width: 300px;
+    min-width: 205px;
+    margin: auto;
+    background-color: rgb(240, 240, 240);
+}
+.card-title {
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}`
 //Create an array of questions for user input
 
 const questions = [
     {
-        type: 'input',
-        message: "What is the title of your application?",
-        name: 'title',
-        default:'Just a Title',
-    },
-    {
-        type: 'input',
-        message: "Provide a description of your application:",
-        name: 'description',
-        default:'Just a Description',
-    },
-    {
-        type: 'input',
-        message: "Provide usage or installation instructions:",
-        name: 'instructions',
-        default:'Do some things',
-    },
-    {
-        type: 'input',
-        message: "Who would be a user of this application?",
-        name: 'userType',
-        default:'Application Programmer',
-    },
-    {
-        type: 'input',
-        message: "Should the user have technical knowledge?",
-        name: 'techKnowledge',
-        default:'Yes',
-    },
-    {
-        type: 'checkbox',
-        message: "Select the technology that your site uses:",
-        name: 'technologies',
-        choices:['HTML','CSS','JavaScript','node.js','bootstrap','Moment','External API','Other'],
-    },
-    {
-        type: 'input',
-        message: "Please explain where in the revision history this application:",
-        name: 'revHistory',
-        default:'Initial deployment',
-    },
-    {
-        type: 'input',
-        message: "How can someone contribute to this project?",
-        name: 'contribute',
-        default:'e-mail me',
-    },
-    {
-        type: 'input',
-        message: "What is your e-mail address?",
-        name: 'email',
-        default:'email@email.com',
-    },
-    {
         type: 'list',
-        message: "Choose a license:",
-        name: 'license',
-        choices:['None','MIT License','Apache License 2.0','GNU General Public License 2.0','Other'],
+        message: "Select the type of employee to create:",
+        name: 'createType',
+        choices:['Employee', 'Manager', 'Engineer', 'Intern'],
     },
     {
         type: 'input',
-        message: "What is your GitHub user name?",
-        name: 'git',
+        message: "Enter the Teammate's name:",
+        name: 'userName',
+        default:'Enter Name',
+    },
+    {
+        type: 'input',
+        message: "Assign a unique employee ID:",
+        name: 'employeeID',
+        default:'1',
+    },
+    {
+        type: 'input',
+        message: "Enter Engineer GitHub user name:",
+        name: 'github',
         default:'mytestuser',
+        when: (input) => input.createType === "Engineer",
+    },
+    {
+        type: 'input',
+        message: "Enter office phone number:",
+        name: 'officeNumber',
+        default:'555-867-5309',
+        when: (input) => input.createType === "Manager",
+    },
+    {
+        type: 'input',
+        message: "Enter school name:",
+        name: 'school',
+        default:'Princeton',
+        when: (input) => input.createType === "Intern",
     },
 ];
 
-//Create a function to write README file
+function writeHTMLStart(fileName, data){
+    fs.writeFile(`./dist/${fileName}`, data, (err) => {
+        if (err)
+          console.log(err);
+        else {
+            return;
+        };
+    });
+};
+
+//Function to write index.html file
 function writeToFile(fileName, data) {
     fs.writeFile(`./dist/${fileName}`, data, (err) => {
         if (err)
           console.log(err);
         else {
-          console.log("File written successfully\n");
-          console.log("The written has the following contents:");
-          console.log(fs.readFileSync("./dist/index.html", "utf8"));
+          console.log(`File written successfully\n`);
+          console.log(`${fileName} was written with the following contents:`);
+          console.log(fs.readFileSync(`./dist/${fileName}`, "utf8"));
+        };
+    });
+};
+
+function appendToFile(fileName, data){
+    fs.appendFile(`./dist/${fileName}`, data, (err) => {
+        if (err)
+            console.log(err);
+        else {
+            console.log("File appended successfully\n");
+            console.log(`${fileName} now has the following contents:`);
+            console.log(fs.readFileSync(`./dist/${fileName}`, "utf8"));
         };
     });
 };
 //Create a function to initialize app
-function init() {
-    inquirer
+async function init() {
+    writeHTMLStart("index.html", htmlStart);
+    const restartEnd = await inquirer.prompt([
+        {
+            type: 'confirm',
+            name: 'restart',
+            message: 'Do you want to add another employee?',
+            default: false,
+        },
+    ]);
+    await inquirer
     .prompt(questions)
     .then((response) => {
         // response.confirm === response.password,
@@ -135,9 +181,12 @@ Please see my GitHub profile at <https://www.github.com/${git}>
 ### License
 ${license}`;
 
-    writeToFile("index.html", htmlData);
+    appendToFile("index.html", htmlData);
     });
+appendToFile("index.html", htmlEnd);
+writeToFile("style.css", cssData);
 };
 
 //initialize app
+
 init();
