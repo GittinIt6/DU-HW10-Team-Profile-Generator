@@ -75,13 +75,13 @@ const questions = [
 
 //Create a function to write README file
 function writeToFile(fileName, data) {
-    fs.writeFile(`./output/${fileName}`, data, (err) => {
+    fs.writeFile(`./dist/${fileName}`, data, (err) => {
         if (err)
           console.log(err);
         else {
           console.log("File written successfully\n");
           console.log("The written has the following contents:");
-          console.log(fs.readFileSync("./output/readme.md", "utf8"));
+          console.log(fs.readFileSync("./dist/index.html", "utf8"));
         };
     });
 };
@@ -94,7 +94,7 @@ function init() {
         // console.log(response)
         // let names = questions.map(({ name }) => name).join(', ');
         const { title, description, instructions, userType, techKnowledge, technologies, revHistory, contribute, email, license, git } = response;
-        let readmeData = 
+        let htmlData = 
 `# ${title}
 ## Description
 ${description}
@@ -135,7 +135,7 @@ Please see my GitHub profile at <https://www.github.com/${git}>
 ### License
 ${license}`;
 
-    writeToFile("readme.md", readmeData);
+    writeToFile("index.html", htmlData);
     });
 };
 
