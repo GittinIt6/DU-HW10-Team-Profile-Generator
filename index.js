@@ -1,7 +1,7 @@
 //Include packages needed for this application
 const fs = require('fs');
 const inquirer = require('inquirer');
-const { json } = require('stream/consumers');
+// const { json } = require('stream/consumers');
 let currentUserType = 'manager';
 let currentEmployeeName = 'John Smith'
 let varManagerName = [];
@@ -22,9 +22,12 @@ let htmlStart =
         <h1>My Team</h1>
     </header>
 
-    <main>`
+    <main>
+        <div class="row justify-content-center mx-auto">`
+
 let htmlEnd =
-`    </main>
+`       </div>
+    </main>
     
 </body>
 </html>`
@@ -53,9 +56,6 @@ header{
     border-top-left-radius: 4px;
     border-top-right-radius: 4px;
 }`
-//Create an array of questions for user input
-
-
 
 function writeHTMLStart(fileName, data){
     fs.writeFile(`./dist/${fileName}`, data, (err) => {
@@ -73,9 +73,9 @@ function writeToFile(fileName, data) {
         if (err)
           console.log(err);
         else {
-          console.log(`File written successfully\n`);
-          console.log(`${fileName} was written with the following contents:`);
-          console.log(fs.readFileSync(`./dist/${fileName}`, "utf8"));
+        //   console.log(`File written successfully\n`);
+        //   console.log(`${fileName} was written with the following contents:`);
+        //   console.log(fs.readFileSync(`./dist/${fileName}`, "utf8"));
         };
     });
 };
@@ -85,9 +85,9 @@ function appendToFile(fileName, data){
         if (err)
             console.log(err);
         else {
-            console.log("File appended successfully\n");
-            console.log(`${fileName} now has the following contents:`);
-            console.log(fs.readFileSync(`./dist/${fileName}`, "utf8"));
+            // console.log("File appended successfully\n");
+            // console.log(`${fileName} now has the following contents:`);
+            // console.log(fs.readFileSync(`./dist/${fileName}`, "utf8"));
         };
     });
 };
@@ -216,21 +216,70 @@ async function userDetail(){
     await inquirer
     .prompt(questions)
     .then((response) => {
-        // response.confirm === response.password,
-        // console.log(response)
-        // let names = questions.map(({ name }) => name).join(', ');
-        //not working..... let fullUserData = JSON.stringify(response);
-        //not working.....  fullUserData.push(`"currentEmployeeName":"${currentEmployeeName}"`);
-        console.log(`${JSON.stringify(response)}, userName:${currentEmployeeName}, userType:${currentUserType}`);
+        let userData = { userName:`${currentEmployeeName}`, userType:`${currentUserType}`};
+        let fullUserData = {...response, ...userData};
+        // console.log(`response data is ${JSON.stringify(response)}`);
+        // console.log(`userData user data is ${JSON.stringify(userData)}`);
+        // console.log(`full user data is ${JSON.stringify(fullUserData)}`);
+        // console.log(fullUserData);
+        if (fullUserData.userType === 'manager'){
+            const { employeeID, email, officeNumber, userName, userType } = fullUserData;
+            // console.log(`${employeeID} ${email} ${officeNumber} ${userName} ${userType}`);
+            let htmlCard =
+            `<div class="col-md-4 px-0">
+                <div class="card shadow mt-5">
+                    <h4 class="card-title bg-primary text-white pt-4 pb-4 font-weight-bold" >
+                        <div class="ml-3 pb-3">${userName}</div>
+                        <div class="ml-3 font-weight-normal">&#9749; Manager</div>
+                    </h4>
+                    <ul class="list-group list-group-flush m-4 border border-dark">
+                        <li class="list-group-item">ID: ${employeeID}</li>
+                        <li class="list-group-item">Email: <a href="mailto:${email}">${email}</a></li>
+                        <li class="list-group-item">Office #: ${officeNumber}</li>
+                    </ul>
+                </div>
+            </div>`
+            appendToFile('index.html',htmlCard);
+        }
+        else if (fullUserData.userType === 'engineer'){
+            const { employeeID, email, github, userName, userType } = fullUserData;
+            let htmlCard =
+            `<div class="col-md-4 px-0">
+                <div class="card shadow mt-5">
+                    <h4 class="card-title bg-primary text-white pt-4 pb-4 font-weight-bold" >
+                        <div class="ml-3 pb-3">${userName}</div>
+                        <div class="ml-3 font-weight-normal">&#128208; Engineer</div>
+                    </h4>
+                    <ul class="list-group list-group-flush m-4 border border-dark">
+                        <li class="list-group-item">ID: ${employeeID}</li>
+                        <li class="list-group-item">Email: <a href="mailto:${email}">${email}</a></li>
+                        <li class="list-group-item">GitHub: <a href="https://github.com/${github}">${github}</a>
+                    </ul>
+                </div>
+            </div>`
+            appendToFile('index.html',htmlCard);
+        }
+        else if (fullUserData.userType === 'intern'){
+            const { employeeID, email, school, userName, userType } = fullUserData;
+            let htmlCard =
+            `<div class="col-md-4 px-0">
+                <div class="card shadow mt-5">
+                    <h4 class="card-title bg-primary text-white pt-4 pb-4 font-weight-bold" >
+                        <div class="ml-3 pb-3">${userName}</div>
+                        <div class="ml-3 font-weight-normal">&#127891; Intern</div>
+                    </h4>
+                    <ul class="list-group list-group-flush m-4 border border-dark">
+                        <li class="list-group-item">ID: ${employeeID}</li>
+                        <li class="list-group-item">Email: <a href="mailto:${email}">${email}</a></li>
+                        <li class="list-group-item">School: ${school}</li>
+                    </ul>
+                </div>
+            </div>`
+            appendToFile('index.html',htmlCard);
+        }
     });
     let nextConf = nextConfirm();
-    // if (currentEmployeeName !== 'end'){
-    //     // return response;
-    //     console.log('did not equal end');
-    // }
-    // else{
-    //     console.log('equaled end');
-    // };
+
 };
 
 async function nextConfirm(){
@@ -261,6 +310,7 @@ async function nextConfirm(){
         if (response.nextStep === 'Finish Building My Team'){
             appendToFile("index.html", htmlEnd);
             writeToFile("style.css", cssData);
+            console.log("Team Profile Website generation complete\nAccess at ./dist/");
             return 'end';
         }
         else if (response.nextStep === 'Add Engineer') {
