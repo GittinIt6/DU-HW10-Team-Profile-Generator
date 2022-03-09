@@ -1,6 +1,10 @@
 //Include packages needed for this application
 const fs = require('fs');
 const inquirer = require('inquirer');
+const Employee = require('./lib/Employee')
+const Manager = require('./lib/Manager')
+const Engineer = require('./lib/Engineer')
+const Intern = require('./lib/Intern')
 // const { json } = require('stream/consumers');
 let currentUserType = 'manager';
 let currentEmployeeName = 'John Smith'
