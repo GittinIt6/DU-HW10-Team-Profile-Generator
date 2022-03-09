@@ -64,6 +64,10 @@ Root Directory/
 
 See HD video at <https://www.youtube.com>
 
+### Data Flow Diagram:
+
+<img src="./git-files/data-flow.png" width="500px">
+
 ## Revision History 
 
 1. This application was created in March 2022 as part of a bootcamp assignment. It was created from scratch with requirements given by the instructor.

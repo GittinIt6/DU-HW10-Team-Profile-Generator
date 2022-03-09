@@ -253,7 +253,7 @@ async function userDetail(){
                     <ul class="list-group list-group-flush m-4 border border-dark">
                         <li class="list-group-item">ID: ${employeeID}</li>
                         <li class="list-group-item">Email: <a href="mailto:${email}">${email}</a></li>
-                        <li class="list-group-item">GitHub: <a href="https://github.com/${github}">${github}</a>
+                        <li class="list-group-item">GitHub: <a href="https://github.com/${github}" target="_blank">${github}</a>
                     </ul>
                 </div>
             </div>`
@@ -310,7 +310,7 @@ async function nextConfirm(){
         if (response.nextStep === 'Finish Building My Team'){
             appendToFile("index.html", htmlEnd);
             writeToFile("style.css", cssData);
-            console.log("Team Profile Website generation complete\nAccess at ./dist/");
+            console.log("Team Profile Website generation complete...\nIndex.html availble here: ./dist/");
             return 'end';
         }
         else if (response.nextStep === 'Add Engineer') {
