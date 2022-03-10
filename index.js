@@ -5,7 +5,6 @@ const Employee = require('./lib/Employee')
 const Manager = require('./lib/Manager')
 const Engineer = require('./lib/Engineer')
 const Intern = require('./lib/Intern')
-// const { json } = require('stream/consumers');
 let currentUserType = 'manager';
 let currentEmployeeName = 'John Smith'
 let varManagerName = [];
@@ -61,6 +60,7 @@ header{
     border-top-right-radius: 4px;
 }`
 
+//function to write the beginning of html output
 function writeHTMLStart(fileName, data){
     fs.writeFile(`./dist/${fileName}`, data, (err) => {
         if (err)
@@ -71,7 +71,7 @@ function writeHTMLStart(fileName, data){
     });
 };
 
-//Function to write index.html file
+//function to write a file to the output/dist folder
 function writeToFile(fileName, data) {
     fs.writeFile(`./dist/${fileName}`, data, (err) => {
         if (err)
@@ -84,6 +84,7 @@ function writeToFile(fileName, data) {
     });
 };
 
+//function to append a file in the output/dist folder
 function appendToFile(fileName, data){
     fs.appendFile(`./dist/${fileName}`, data, (err) => {
         if (err)
@@ -95,7 +96,8 @@ function appendToFile(fileName, data){
         };
     });
 };
-//Create a function to initialize app
+
+//initialize app
 async function init() {
     writeHTMLStart("index.html", htmlStart);
     varManagerName = await inquirer.prompt([
@@ -108,69 +110,12 @@ async function init() {
     ]);
     currentEmployeeName = varManagerName.managerName;
     let userData = userDetail();
-    // console.log('finished user detail');
-
-
-//     await inquirer
-//     .prompt(questions)
-//     .then((response) => {
-//         // response.confirm === response.password,
-//         // console.log(response)
-//         // let names = questions.map(({ name }) => name).join(', ');
-//         const { title, description, instructions, userType, techKnowledge, technologies, revHistory, contribute, email, license, git } = response;
-//         let htmlData = 
-// `# ${title}
-// ## Description
-// ${description}
-
-// ## Table of Contents
-// -[Description](#description)<br>
-// -[Instructions](#instructions)<br>
-// -[Intended Audience](#audience)<br>
-// -[Tech](#technologies-used)<br>
-// -[Revisions](#revision-history)<br>
-// -[Contribute](#contribute)<br>
-// -[Contact](#contact)<br>
-// -[License](#license)
-
-// ## Instructions
-// ${instructions}
-
-// ### Audience
-// ~~~
-// Intended audience: ${userType}
-// Should the user of this site need to have a technical background: ${techKnowledge}
-// ~~~
-
-// ## Technologies Used
-// >${technologies.join(' | ')}
-
-// ## Revision History 
-// *${revHistory}*
-
-// ### **Contribute**
-// To contribute, please ${contribute}.
-
-// ### Contact
-// You can email me at <${email}>
-
-// Please see my GitHub profile at <https://www.github.com/${git}>
-
-// ### License
-// ${license}`;
-
-//     appendToFile("index.html", htmlData);
-//     });
 };
 
+//function to get data from inquirer
 async function userDetail(){
+    //set array of questions
     const questions = [
-        // {
-        //     type: 'input',
-        //     message: "Enter the Team Manager's name:",
-        //     name: 'managerName',
-        //     default:'Enter Name',
-        // },
         {
             type: 'input',
             message: "Assign a unique employee ID:",
@@ -183,52 +128,35 @@ async function userDetail(){
             name: 'email',
             default:'email@email.com',
         },
-        // {
-        //     type: 'input',
-        //     message: "Enter the Teammate's name:",
-        //     name: 'userName',
-        //     default:'Enter Name',
-        // },
-        {
+        {//will be used when engineer is selected
             type: 'input',
             message: "Enter Engineer GitHub user name:",
             name: 'github',
             default:'mytestuser',
             when: currentUserType === 'engineer',
         },
-        {
+        {//will be used when manager is selected
             type: 'input',
             message: "Enter office phone number:",
             name: 'officeNumber',
             default:'555-867-5309',
             when: currentUserType === 'manager',
         },
-        {
+        {//will be used when intern is selected
             type: 'input',
             message: "Enter school name:",
             name: 'school',
             default:'Princeton',
             when: currentUserType === 'intern',
         },
-        // {
-        //     type: 'list',
-        //     message: "Select the type of employee to create:",
-        //     name: 'createType',
-        //     choices:['Employee', 'Manager', 'Engineer', 'Intern'],
-        // },
     ];
     await inquirer
     .prompt(questions)
     .then((response) => {
         let userData = { userName:`${currentEmployeeName}`, userType:`${currentUserType}`};
         let fullUserData = {...response, ...userData};
-        // console.log(`response data is ${JSON.stringify(response)}`);
-        // console.log(`userData user data is ${JSON.stringify(userData)}`);
-        // console.log(`full user data is ${JSON.stringify(fullUserData)}`);
-        // console.log(fullUserData);
         if (fullUserData.userType === 'manager'){
             const { employeeID, email, officeNumber, userName, userType } = fullUserData;
-            // console.log(`${employeeID} ${email} ${officeNumber} ${userName} ${userType}`);
             let htmlCard =
             `<div class="col-md-4 px-0">
                 <div class="card shadow mt-5">
@@ -286,6 +214,7 @@ async function userDetail(){
 
 };
 
+//function to ask what the user wants to do next after each user data inquirer
 async function nextConfirm(){
     await inquirer
     .prompt([
@@ -319,20 +248,16 @@ async function nextConfirm(){
         }
         else if (response.nextStep === 'Add Engineer') {
             currentUserType = 'engineer';
-            // console.log(`${currentUserType} is currentusertype`);
             currentEmployeeName = response.userName;
             userDetail();
-            // return response.userName;
         }
         else{
             currentUserType = 'intern';
             currentEmployeeName = response.userName;
             userDetail();
-            // return response.userName;
         };
     });
 };
 
 //initialize app
-
 init();
