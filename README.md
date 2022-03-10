@@ -7,7 +7,11 @@ This is a node.js script relying on NPM package **inquirer** that will generate 
 
 Github Repository Address: <https://github.com/GittinIt6/DU-HW10-Team-Profile-Generator>
 
-See walkthrough video at <https://youtu.be/nK0yBoj2ngU>
+See walkthrough/demonstration video at <https://youtu.be/nK0yBoj2ngU>
+
+## Purpose
+
+This application is specific to anyone that wants to generate an html website showing the manager and members of their team.
 
 ## Instructions
 1. Ensure you have downloaded and installed node.js and have rebooted your system (if Windows)
@@ -20,9 +24,12 @@ node index.js
 ~~~
 5. A rendered output of index.html and style.css will be saved into your **./dist** directory
 
-## Purpose
-
-This application is specific to anyone that wants to generate an html website showing the manager and members of their team.
+### Testing with jest
+1. Ensure you are the in the index.js directory
+2. Run:
+~~~
+npm test
+~~~
 
 ## Audience
 
@@ -62,11 +69,11 @@ Root Directory/
 
 >**inquirer NPM package**: This site uses inquirer <https://www.npmjs.com/package/inquirer>
 
-![video of the application at work](./git-files/DU-HW9-GIF.gif)
+>**jest for testing**: This site uses jest <https://jestjs.io/>
 
 ### Data Flow Diagram:
 
-![data flow diagram](./git-files/data-flow.png)
+![data flow diagram](./git-files/data-flow.PNG)
 
 ## Revision History 
 
