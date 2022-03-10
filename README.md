@@ -7,6 +7,8 @@ This is a node.js script relying on NPM package **inquirer** that will generate 
 
 Github Repository Address: <https://github.com/GittinIt6/DU-HW10-Team-Profile-Generator>
 
+See walkthrough video at <https://youtu.be/nK0yBoj2ngU>
+
 ## Instructions
 1. Ensure you have downloaded and installed node.js and have rebooted your system (if Windows)
 2. Clone repository to your system.
@@ -62,11 +64,9 @@ Root Directory/
 
 ![video of the application at work](./git-files/DU-HW9-GIF.gif)
 
-See HD video at <https://www.youtube.com>
-
 ### Data Flow Diagram:
 
-<img src="./git-files/data-flow.png" width="500px">
+![data flow diagram](./git-files/data-flow.png)
 
 ## Revision History 
 
